@@ -82,7 +82,7 @@ WORDS = 'ANT BADGER BEAVER DONKEY EAGLE GOOSE LIZARD MONKEY MOUSE PARROT PYTHON 
 
 # Main Program Function
 def main():
-    print("Hangman, by Eva Donahue")
+    print("\n\nHangman, by Eva Donahue")
     print("=========================================================\n")
     print("based on Al Sweigart's Big Book of Small Python Projects\n\n")
 
@@ -91,9 +91,29 @@ def main():
     correctLetters = [] # List of correct letter guesses.
     secretWord = random.choice(WORDS)  
 
+    while True:
+        drawHangman(missedLetters, correctLetters, secretWord)
 
+        # Let the player enter their letter guess:
+        guess = getPlayerGuess(missedLetters + correctLetters)
 
-'''
+        if guess in secretWord:
+            #Add the correct guess to correctLetters
+            correctLetters.append(guess)
+
+        #Check if the player has won:
+        foundAllLetters = True # Start off assuming they've won
+        for secretWordLetter in secretWord:
+            if secretWordLetter not in correctLetters:
+                # There's a letter in the secret word that isn't yet in correctLetters, so the player hasn't won: 
+                foundAllLetters = False 
+                break
+        if foundAllLetters: 
+            print("Yes! The secret word is:", secretWord)
+            print("You have won!")
+            break # Break out of main game loop
+
+'''!
 Draw the current state of the hangman game, along with the missed and correctly guessed letters of the secret word
 '''
 def drawHangman(missedLetters, correctLetters, secretWord):
@@ -115,8 +135,21 @@ def drawHangman(missedLetters, correctLetters, secretWord):
 '''
 Returns the letter the player entered. This function makes sure the player entered a single letter that they haven't guessed before 
 '''
-
-
+def getPlayerGuess(alreadyGuessed):
+    '''
+    Returns the letter the player entered. This function makes sure the player entered a single letter they haven't guessed before.
+    '''
+    while True: # Keep asking until the player enters a valid letter
+        print("Guess a Letter: ")
+        guess = input('> ').upper()
+        if len(guess) != 1:
+            print("Please enter a single letter.")
+        elif guess in alreadyGuessed:
+            print("You have already guessed that letter. Choose again.")
+        elif not guess.isalpha():
+            print("Please enter a LETTER.")
+        else:
+            return guess 
 
 # If this program was run(instead of imported), run the game: 
 if __name__ == '__main__':
